@@ -7,7 +7,7 @@ const app = express();
 const cats = [
   {
     cat_id: 1,
-    name: 'Miuku',
+    name: 'Miukuuuuuu',
     birthdate: '2026-10-10',
     weight: 78,
     owner: 'Matti',
@@ -30,6 +30,12 @@ const cats = [
     image: 'https://placecats.com320/240',
   },
 ];
+
+app.use(express.static('public'));
+// app.use('/images', express.static('public'));
+
+// needed for reading request body in JSON format
+app.use(express.json());
 
 // käynnistään HTTP- palvelimen kuuntelemaan porttia
 app.listen(port, hostname, () => {
@@ -58,19 +64,27 @@ app.get('/api/v1/cats', (req, res) => {
 // property name (id) is set in the route definition
 app.get('/api/v1/cats/:id', (req, res) => {
   //console.log(req);
+
   // PALAUTTAKAA VAIN YKSI KISSA req.params.id haulla
 
-  console.log('path variables', req.params);
-  if (req.params.id === '99') {
-    const myData = {
-      title: 'This is a specific item, id: ' + req.params.id,
-      description: 'Just some dummy data here',
-    };
-    res.json(myData);
-  } else {
-    res.sendStatus(404);
+  // 1. Haetaan ID URL-parametrista ja muunnetaan numeroksi
+  const id = Number(req.params.id);
+  console.log(id);
+
+  // 2. Etsitään kissa taulukosta
+  // find palauttaa ensimmäisen löytyneen olion tai undefined
+  const cat = cats.find((cat) => cat.cat_id === id);
+
+  // 3. Jos kissaa ei löydy, palautetaan 404
+  if (!cat) {
+    return res.status(404).json({message: 'Kissaa ei löytynyt'});
   }
+
+  // 4. Jos kissa löytyy, palautetaan sen tiedot
+  res.json(cat);
 });
 
-app.use(express.static('public'));
-// app.use('/images', express.static('public'));
+app.post('/api/v1/cats', (req, res) => {
+  console.log('request', req.body);
+  res.sendStatus(201);
+});
