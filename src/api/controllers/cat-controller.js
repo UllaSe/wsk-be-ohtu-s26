@@ -1,9 +1,24 @@
-import {addCat, findCatById, listAllCats, modifyCat, removeCat} from '../models/cat-model.js';
+import {
+  addCat,
+  findCatById,
+  listAllCats,
+  modifyCat,
+  removeCat,
+} from '../models/cat-model.js';
 
 const getAllCats = (req, res) => {
   //const cats = [{cat_id: 1, name: 'Misu'}];
-  res.json(listAllCats());
-}
+  console.log('Ollaan nyt controllerissa');
+  // res.json(listAllCats());
+  const cats = listAllCats();
+
+  // esimerkki siitä että middleware on muokannut req-objektia
+  res.json({
+    message: 'Cats reittiin lisätty aikaleima',
+    time: req.requestTime,
+    data: cats,
+  });
+};
 
 const getCatById = (req, res) => {
   //console.log(req);
@@ -23,8 +38,11 @@ const getCatById = (req, res) => {
 
 const postCat = (req, res) => {
   console.log('request', req.body);
-  const id = addCat(req.body);
-  res.status(201).json({cat_id: id});
+  console.log(req.file);
+  console.log(req.file.filename);
+  res.json({message: 'Kuva saatiin'});
+  //const id = addCat(req.body);
+  //res.status(201).json({cat_id: id});
 };
 
 const deleteCat = (req, res) => {
