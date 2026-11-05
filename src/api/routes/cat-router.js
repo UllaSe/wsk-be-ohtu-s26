@@ -11,6 +11,7 @@ import logger from '../../middlewares/logger.js';
 // multer and sharp imports
 import multer from 'multer';
 import {createThumbnail} from '../../middlewares/upload.js';
+import {authenticateToken} from '../../middlewares/authentication.js';
 const upload = multer({dest: 'uploads/'});
 
 const catRouter = express.Router();
@@ -19,9 +20,9 @@ const catRouter = express.Router();
 catRouter
   .route('/')
   .get(logger, getAllCats)
-  .post(upload.single('image'), createThumbnail, postCat);
+  .post(authenticateToken, upload.single('image'), createThumbnail, postCat);
 // Kaikki /api/v1/cats/:id reitit
-catRouter.route('/:id').get(getCatById).delete(deleteCat).put(putCat);
+catRouter.route('/:id').get(getCatById).delete(authenticateToken, deleteCat).put(putCat);
 
 export default catRouter;
 

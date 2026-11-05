@@ -40,7 +40,7 @@ const postCat = async (req, res) => {
   console.log(req.file);
   console.log(req.file.filename);
   req.body.filename = req.file.filename;
-
+  req.body.owner = res.locals.user.user_id;
   const result = await addCat(req.body);
   if (result) {
     res.status(201);
@@ -69,4 +69,4 @@ const putCat = async (req, res) => {
   }
 };
 
-export {getAllCats, getCatById, postCat, deleteCat, putCat};
+export {getAllCats, getCatById, postCat, deleteCat, putCat, getCatsByUserId};
