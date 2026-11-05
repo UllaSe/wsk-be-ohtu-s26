@@ -31,13 +31,17 @@ const getCatById = async (req, res) => {
   res.json(cat);
 };
 
-const postCat = (req, res) => {
+const getCatsByUserId = async(req, res) => {
+  // TODO: implement, use findCatByUserId() model and add route to user router, and api test to tests
+};
+
+const postCat = async (req, res) => {
   console.log('request', req.body);
   console.log(req.file);
   console.log(req.file.filename);
   req.body.filename = req.file.filename;
 
-  const result = addCat(req.body);
+  const result = await addCat(req.body);
   if (result) {
     res.status(201);
     res.json({message: 'New cat added.', result});
@@ -46,8 +50,8 @@ const postCat = (req, res) => {
   }
 };
 
-const deleteCat = (req, res) => {
-  const result = removeCat(Number(req.params.id));
+const deleteCat = async (req, res) => {
+  const result = await removeCat(Number(req.params.id));
   if (result) {
     res.json({message: 'Cat removed!'});
   } else {
@@ -55,9 +59,9 @@ const deleteCat = (req, res) => {
   }
 };
 
-const putCat = (req, res) => {
+const putCat = async (req, res) => {
   // in real life, all input data (req.body) should be validated before using it
-  const result = modifyCat(Number(req.params.id), req.body);
+  const result = await modifyCat(Number(req.params.id), req.body);
   if (result) {
     res.json({message: 'Cat updated!'});
   } else {

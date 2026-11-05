@@ -4,6 +4,8 @@ import promisePool from '../../utils/database.js';
 
 const listAllCats = async () => {
   const [rows] = await promisePool.query('SELECT * FROM wsk_cats');
+  // TODO: liitä kyselyyn myös haku käyttäjätaulusta, ja korvaa palautettavasta
+  // objektista user_id usernamella
   console.log('rows', rows);
   return rows;
 };
@@ -13,10 +15,20 @@ const findCatById = async (id) => {
     'SELECT * FROM wsk_cats WHERE cat_id = ?',
     [id]
   );
+  // TODO: liitä kyselyyn myös haku käyttäjätaulusta, ja korvaa palautettavasta
+  // objektista user_id usernamella
   console.log('rows', rows);
   if (rows.length === 0) {
     return false;
   }
+  return rows[0];
+};
+
+const findCatByUserId = async (userId) => {
+  const [rows] = await promisePool.execute(
+    'SELECT * FROM wsk_cats WHERE owner = ?',
+    [userId]
+  );
   return rows[0];
 };
 
@@ -25,15 +37,15 @@ const addCat = async (cat) => {
   const sql = `INSERT INTO wsk_cats (cat_name, weight, owner, filename, birthdate)
                VALUES (?, ?, ?, ?, ?)`;
   const params = [cat_name, weight, owner, filename, birthdate];
-  const rows = await promisePool.execute(sql, params);
-  console.log('rows', rows);
-  if (rows[0].affectedRows === 0) {
+  const [result] = await promisePool.execute(sql, params);
+  console.log('insert query result', result);
+  if (result.affectedRows === 0) {
     return false;
   }
-  return {cat_id: rows[0].insertId};
+  return {cat_id: result.insertId};
 };
 
-const modifyCat = async (cat, id) => {
+const modifyCat = async (id, cat) => {
   const sql = promisePool.format(`UPDATE wsk_cats SET ? WHERE cat_id = ?`, [
     cat,
     id,
@@ -43,7 +55,7 @@ const modifyCat = async (cat, id) => {
   if (rows[0].affectedRows === 0) {
     return false;
   }
-  return {message: 'success'};
+  return true;
 };
 
 const removeCat = async (id) => {
@@ -55,7 +67,7 @@ const removeCat = async (id) => {
   if (rows.affectedRows === 0) {
     return false;
   }
-  return {message: 'success'};
+  return true;
 };
 
-export {listAllCats, findCatById, addCat, modifyCat, removeCat};
+export {listAllCats, findCatById, addCat, modifyCat, removeCat, findCatByUserId};

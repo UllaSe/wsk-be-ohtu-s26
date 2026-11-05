@@ -39,7 +39,7 @@ Content-Disposition: form-data; name="weight"
 --MyBoundary
 Content-Disposition: form-data; name="owner"
 
-Ulla
+37
 --MyBoundary
 Content-Disposition: form-data; name="birthdate"
 
@@ -52,13 +52,13 @@ Content-Type: image/jpeg
 --MyBoundary--
 
 ### edit existing cat
-PUT {{apiUrl}}/cats/8
+PUT {{apiUrl}}/cats/48
 Content-Type: application/json
 
 {
     "weight": 6,
-    "owner": "Uusi omistaja"
+    "cat_name": "Uusi nimi"
 }
 
 ### delete cat by id
-DELETE {{apiUrl}}/cats/8
+DELETE {{apiUrl}}/cats/48
