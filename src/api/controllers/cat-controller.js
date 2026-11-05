@@ -6,28 +6,23 @@ import {
   removeCat,
 } from '../models/cat-model.js';
 
-const getAllCats = (req, res) => {
+const getAllCats = async (req, res) => {
   //const cats = [{cat_id: 1, name: 'Misu'}];
   console.log('Ollaan nyt controllerissa');
   // res.json(listAllCats());
-  const cats = listAllCats();
+  const cats = await listAllCats();
 
   // esimerkki siitä että middleware on muokannut req-objektia
   res.json({
-    message: 'Cats reittiin lisätty aikaleima',
+    message: 'Tässä kissat',
     time: req.requestTime,
     data: cats,
   });
 };
 
-const getCatById = (req, res) => {
-  //console.log(req);
-  // PALAUTTAKAA VAIN YKSI KISSA req.params.id haulla
-  // 1. Haetaan ID URL-parametrista ja muunnetaan numeroksi
-  const id = Number(req.params.id);
-  //console.log(id);
+const getCatById = async (req, res) => {
   // 2. Haetaan kissa modelilta
-  const cat = findCatById(id);
+  const cat = await findCatById(req.params.id);
   // 3. Jos kissaa ei löydy, palautetaan 404
   if (!cat) {
     return res.status(404).json({message: 'Kissaa ei löytynyt'});
