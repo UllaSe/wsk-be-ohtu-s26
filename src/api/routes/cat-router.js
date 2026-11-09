@@ -8,7 +8,7 @@ import {
 } from '../controllers/cat-controller.js';
 import {createThumbnail, upload} from '../../middlewares/upload.js';
 import {authenticateToken} from '../../middlewares/authentication.js';
-import {body} from 'express-validator';
+import {body, param} from 'express-validator';
 import {validationErrors} from '../../middlewares/error-handlers.js';
 
 const catRouter = express.Router();
@@ -29,7 +29,7 @@ catRouter
 // Kaikki /api/v1/cats/:id reitit
 catRouter
   .route('/:id')
-  .get(getCatById)
+  .get(param('id').isNumeric(), validationErrors, getCatById)
   .delete(authenticateToken, deleteCat)
   // add authentication and validators:
   .put(putCat);
