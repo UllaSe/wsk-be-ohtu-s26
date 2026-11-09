@@ -6,12 +6,10 @@ import {
   postCat,
   putCat,
 } from '../controllers/cat-controller.js';
-
-// multer and sharp imports
-import multer from 'multer';
-import {createThumbnail} from '../../middlewares/upload.js';
+import {createThumbnail, upload} from '../../middlewares/upload.js';
 import {authenticateToken} from '../../middlewares/authentication.js';
-const upload = multer({dest: 'uploads/'});
+import {body} from 'express-validator';
+import {validationErrors} from '../../middlewares/error-handlers.js';
 
 const catRouter = express.Router();
 
@@ -19,12 +17,21 @@ const catRouter = express.Router();
 catRouter
   .route('/')
   .get(authenticateToken, getAllCats)
-  .post(authenticateToken, upload.single('image'), createThumbnail, postCat);
+  .post(
+    authenticateToken,
+    body('cat_name').isLength({min: 2, max: 90}),
+    // TODO: add validators for all fields here
+    validationErrors,
+    upload.single('image'),
+    createThumbnail,
+    postCat
+  );
 // Kaikki /api/v1/cats/:id reitit
 catRouter
   .route('/:id')
   .get(getCatById)
   .delete(authenticateToken, deleteCat)
+  // add authentication and validators:
   .put(putCat);
 
 export default catRouter;

@@ -68,11 +68,7 @@ Content-Disposition: form-data; name="weight"
 Content-Disposition: form-data; name="birthdate"
 
 2022-10-08
---MyBoundary
-Content-Disposition: form-data; name="image"; filename="dog.jpg"
-Content-Type: image/jpeg
 
-< ./dog.jpg
 --MyBoundary--
 
 ### edit existing cat
@@ -95,10 +91,10 @@ POST {{apiUrl}}/users
 Content-Type: application/json
 
 {
-    "name": "Matti",
-    "username": "matti",
-    "email": "matti@example.com",
-    "password": "salakala"
+    "name": "matti12",
+    "username": "matti6",
+    "email": "matti6@example.com",
+    "password": "salainen"
 }
 
 
