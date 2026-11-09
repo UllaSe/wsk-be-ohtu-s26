@@ -5,8 +5,14 @@ const port = 3000;
 const app = express();
 import requestTime from './middlewares/request-time.js';
 import cors from 'cors';
+import {notFoundHandler, errorHandler} from './middlewares/error-handlers.js';
 
 app.use(cors());
+
+// käynnistään HTTP-palvelimen kuuntelemaan porttia
+app.listen(port, hostname, () => {
+  console.log(`Server running at http://${hostname}:${port}/`);
+});
 
 app.use(express.static('public'));
 // app.use('/images', express.static('public'));
@@ -22,7 +28,7 @@ app.use(express.urlencoded({extended: true}));
 // Ohjataan kaikki /api/v1/-alkuiset pyynnöt apin router middlewarelle (api/index.js)
 app.use('/api/v1', router);
 
-// käynnistään HTTP-palvelimen kuuntelemaan porttia
-app.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+// Default for all routes not handled by routers above
+app.use(notFoundHandler);
+// Add error handler middleware as the last middleware in the chain
+app.use(errorHandler);

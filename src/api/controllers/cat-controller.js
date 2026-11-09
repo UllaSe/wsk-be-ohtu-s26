@@ -35,19 +35,25 @@ const getCatsByUserId = async (req, res) => {
   // TODO: implement, use findCatByUserId() model and add route to user router, and api test to tests
 };
 
-const postCat = async (req, res) => {
+const postCat = async (req, res, next) => {
+  // check if file is rejected by multer
+  if (!req.file) {
+    const error = new Error('Invalid or missing file');
+    error.status = 400;
+    return next(error);
+  }
+
   console.log('request', req.body);
   console.log(req.file);
   console.log(req.file.filename);
   req.body.filename = req.file.filename;
   req.body.owner = res.locals.user.user_id;
+
   const result = await addCat(req.body);
-  if (result) {
-    res.status(201);
-    res.json({message: 'New cat added.', result});
-  } else {
-    res.sendStatus(400);
+  if (result.error) {
+    return next(new Error(result.error));
   }
+  res.status(201).json({message: 'New media item added.', ...result});
 };
 
 const deleteCat = async (req, res) => {
