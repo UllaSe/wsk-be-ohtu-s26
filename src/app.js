@@ -4,6 +4,9 @@ const hostname = '127.0.0.1';
 const port = 3000;
 const app = express();
 import requestTime from './middlewares/request-time.js';
+import cors from 'cors';
+
+app.use(cors());
 
 app.use(express.static('public'));
 // app.use('/images', express.static('public'));

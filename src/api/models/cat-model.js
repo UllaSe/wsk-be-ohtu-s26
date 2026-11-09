@@ -58,16 +58,34 @@ const modifyCat = async (id, cat) => {
   return true;
 };
 
-const removeCat = async (id) => {
-  const [rows] = await promisePool.execute(
-    'DELETE FROM wsk_cats WHERE cat_id = ?',
-    [id]
-  );
-  console.log('rows', rows);
-  if (rows.affectedRows === 0) {
-    return false;
+const removeCat = async (id, user) => {
+  let sql;
+  let params;
+
+  // Admin saa poistaa minkä tahansa kissan
+  if (user.role === 'admin') {
+    sql = 'DELETE FROM wsk_cats WHERE cat_id = ?';
+    params = [id];
+  } else {
+    // Tavallinen käyttäjä saa poistaa vain oman kissansa
+    sql = 'DELETE FROM wsk_cats WHERE cat_id = ? AND owner = ?';
+    params = [id, user.user_id];
   }
-  return true;
+
+  const [result] = await promisePool.execute(sql, params);
+
+  // 0 = yhtään kissaa ei poistettu
+  // 1 = yksi kissa poistettiin
+  // 2 = kaksi kissaa poistettiin
+
+  return result.affectedRows > 0;
 };
 
-export {listAllCats, findCatById, addCat, modifyCat, removeCat, findCatByUserId};
+export {
+  listAllCats,
+  findCatById,
+  addCat,
+  modifyCat,
+  removeCat,
+  findCatByUserId,
+};

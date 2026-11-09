@@ -6,7 +6,6 @@ import {
   postCat,
   putCat,
 } from '../controllers/cat-controller.js';
-import logger from '../../middlewares/logger.js';
 
 // multer and sharp imports
 import multer from 'multer';
@@ -19,10 +18,14 @@ const catRouter = express.Router();
 // Kaikki /api/v1/cats reitit
 catRouter
   .route('/')
-  .get(logger, getAllCats)
+  .get(authenticateToken, getAllCats)
   .post(authenticateToken, upload.single('image'), createThumbnail, postCat);
 // Kaikki /api/v1/cats/:id reitit
-catRouter.route('/:id').get(getCatById).delete(authenticateToken, deleteCat).put(putCat);
+catRouter
+  .route('/:id')
+  .get(getCatById)
+  .delete(authenticateToken, deleteCat)
+  .put(putCat);
 
 export default catRouter;
 

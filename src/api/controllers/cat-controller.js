@@ -31,7 +31,7 @@ const getCatById = async (req, res) => {
   res.json(cat);
 };
 
-const getCatsByUserId = async(req, res) => {
+const getCatsByUserId = async (req, res) => {
   // TODO: implement, use findCatByUserId() model and add route to user router, and api test to tests
 };
 
@@ -51,7 +51,11 @@ const postCat = async (req, res) => {
 };
 
 const deleteCat = async (req, res) => {
-  const result = await removeCat(Number(req.params.id));
+  const id = Number(req.params.id);
+  const user = res.locals.user;
+  console.log('user', user);
+
+  const result = await removeCat(id, user);
   if (result) {
     res.json({message: 'Cat removed!'});
   } else {
